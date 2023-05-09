@@ -1,0 +1,55 @@
+#include <iostream>
+using namespace std;
+
+class Node {
+    public:
+        int data;
+        Node* next;
+
+        Node(int value) {
+            data = value;
+            next = nullptr;
+        }
+};
+
+class Stack {
+    private:
+        Node* top;
+        int size;
+    
+    public:
+        Stack() {
+            top = nullptr;
+            size = 0;
+        }
+
+        void push(int value) {
+            Node* node = new Node(value);
+            node->next = top;
+            top = node;
+            size++;
+        }
+
+        int pop() {
+            if (top == nullptr) {
+                return -1;
+            }
+            int value = top->data;
+            Node* temp = top;
+            top = top->next;
+            delete temp;
+            size--;
+            return value;
+        }
+
+        int StackTop() {
+            if (top == nullptr) {
+                return -1;
+            }
+            return top->data;
+        }
+
+        bool is_empty() {
+            return top == nullptr;
+        }
+};
