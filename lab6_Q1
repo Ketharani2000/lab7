@@ -1,0 +1,45 @@
+#include <iostream>
+using namespace std;
+
+class Stack {
+    private:
+        int top;
+        int capacity;
+        int *arr;
+    
+    public:
+        Stack(int capacity) {
+            top = -1;
+            this->capacity = capacity;
+            arr = new int[capacity];
+        }
+
+        void push(int value) {
+            if (top < capacity - 1) {
+                top++;
+                arr[top] = value;
+            }
+        }
+
+        int pop() {
+            int value = -1;
+            if (top >= 0) {
+                value = arr[top];
+                top--;
+            }
+            return value;
+        }
+
+        bool is_empty() {
+            return top == -1;
+        }
+
+        int size() {
+            return top + 1;
+        }
+        
+        bool is_full() {
+            int len = size();
+            return top == len-1;
+        }
+};
