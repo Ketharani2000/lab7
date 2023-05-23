@@ -1,0 +1,83 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+int getMinKey(const vector<int>& key, const vector<bool>& mstSet, int V) {
+    int minKey = INT_MAX;
+    int minIndex = -1;
+
+    for (int v = 0; v < V; ++v) {
+        if (!mstSet[v] && key[v] < minKey) {
+            minKey = key[v];
+            minIndex = v;
+        }
+    }
+
+    return minIndex;
+}
+
+vector<pair<pair<int, int>, int>> primMST(const vector<vector<int>>& graph) {
+    int V = graph.size(); // Number of vertices in the graph
+
+    // Initialize the key values used to pick minimum weight edges
+    vector<int> key(V, INT_MAX);
+
+    // Parent array to store the MST
+    vector<int> parent(V, -1);
+
+    // Array to track if a vertex is included in the MST
+    vector<bool> mstSet(V, false);
+
+    // Start with the first vertex as the root
+    key[0] = 0;
+
+    for (int count = 0; count < V - 1; ++count) {
+        int u = getMinKey(key, mstSet, V);
+
+        // Add the picked vertex to the MST
+        mstSet[u] = true;
+
+        // Update key values and parent index for adjacent vertices
+        for (int v = 0; v < V; ++v) {
+            if (graph[u][v] && !mstSet[v] && graph[u][v] < key[v]) {
+                parent[v] = u;
+                key[v] = graph[u][v];
+            }
+        }
+    }
+
+    // Construct the MST edges with their corresponding weights
+    vector<pair<pair<int, int>, int>> mst;
+    for (int i = 1; i < V; ++i) {
+        mst.emplace_back(make_pair(parent[i], i), graph[i][parent[i]]);
+    }
+
+    return mst;
+}
+
+int main() {
+    // Example graph represented as an adjacency matrix
+    vector<vector<int>> graph = {
+       {0, 3, 0, 0,0,1}, // Edge weights between vertices 0 (A), 1 (B), 2 (C), 3 (D)
+        {3,0,2,1,10,0},
+        {0,2,0,3,0,5},
+        {0,1,3,0,5,0},
+        {0,10,0,5,0,4},
+        {1,0,5,0,4,0}
+    };
+
+    // Obtain the MST using Prim's algorithm
+    vector<pair<pair<int, int>, int>> mst = primMST(graph);
+
+    // Print the MST edges with their corresponding weights
+    for (const auto& edge : mst) {
+        int u = edge.first.first;
+        int v = edge.first.second;
+        int weight = edge.second;
+        cout << u << " -- " << v << " (Weight: " << weight << ")" << endl;
+    }
+
+    return 0;
+}
